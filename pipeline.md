@@ -1,6 +1,12 @@
 我希望实现从rgb卫星图生成基于mesh的3d城市。现在我希望先基于TRELLIS.2实现楼房的生成。
+
+目前我希望基于skylines_50k_data数据进行test_on_test拟合，验证我的数据pipeline和训练思路是正确的。
+这个数据集的meta data可以在/data5/jianxin/dataset/SatSkylines/tools/data/skylines_50k/skylines_50k_labels.tsv找到，skylines_50k_context.tsv中进一步提供了建筑分类。
+
+
+
 你可以拿到的条件是：
-- 屋顶顶视图作为外观A（在真实卫星图中，可以用sam3做实例分割）
+- 屋顶顶视图作为外观A（在真实卫星图中，可以用sam3做实例分割；由于真实卫星图不是严格的顶视图，所以对skylines的某栋建筑，你可以随机倾斜一个小的角度来构造多种顶视图）
 - 挤出的3d白模作为几何G（在真实卫星图中，可以用分割得到footprint + 深度估计建筑高度 来挤出白模）
 - 周围街区/建筑的图片作为上下文风格C（在test_on_train阶段，先跳过此步骤）
 

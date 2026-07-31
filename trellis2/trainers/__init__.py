@@ -18,6 +18,9 @@ __attributes = {
     'ImageConditionedSparseFlowMatchingCFGTrainer': 'flow_matching.sparse_flow_matching',
     'MultiImageConditionedSparseFlowMatchingCFGTrainer': 'flow_matching.sparse_flow_matching',
     
+    'GeoImageConditionedFlowMatchingCFGTrainer': 'flow_matching.geo_flow_matching',
+    'GeoImageConditionedSparseFlowMatchingCFGTrainer': 'flow_matching.geo_flow_matching',
+    
     'DinoV2FeatureExtractor': 'flow_matching.mixins.image_conditioned',
     'DinoV3FeatureExtractor': 'flow_matching.mixins.image_conditioned',
 }
@@ -60,6 +63,11 @@ if __name__ == '__main__':
         SparseFlowMatchingCFGTrainer,
         TextConditionedSparseFlowMatchingCFGTrainer,
         ImageConditionedSparseFlowMatchingCFGTrainer,
+    )
+    
+    from .flow_matching.geo_flow_matching import (
+        GeoImageConditionedFlowMatchingCFGTrainer,
+        GeoImageConditionedSparseFlowMatchingCFGTrainer,
     )
     
     from .flow_matching.mixins.image_conditioned import (

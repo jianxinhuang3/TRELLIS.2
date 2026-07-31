@@ -208,3 +208,5 @@ __marimo__/
 
 # Model weights (large files, not tracked in git)
 weights/
+
+outputs/

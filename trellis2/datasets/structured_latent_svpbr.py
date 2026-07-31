@@ -110,8 +110,11 @@ class SLatPbrVisMixin:
         renderer.rendering_options.far = 100
         renderer.rendering_options.ssaa = 2
         renderer.rendering_options.peel_layers = 8
+        # NOTE: cv2 5.0.0 cannot decode EXR (returns None even with
+        # OPENCV_IO_ENABLE_OPENEXR=1), so load the HDRI via imageio (RGB float32).
+        import imageio.v3 as iio
         envmap = EnvMap(torch.tensor(
-            cv2.cvtColor(cv2.imread('assets/hdri/forest.exr', cv2.IMREAD_UNCHANGED), cv2.COLOR_BGR2RGB),
+            np.ascontiguousarray(iio.imread('assets/hdri/forest.exr')[..., :3]),
             dtype=torch.float32, device='cuda'
         ))
         

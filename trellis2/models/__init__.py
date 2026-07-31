@@ -10,6 +10,10 @@ __attributes = {
     'SLatFlowModel': 'structured_latent_flow',
     'ElasticSLatFlowModel': 'structured_latent_flow',
     
+    # Injected (frozen base + trainable injection layers)
+    'InjectedSparseStructureFlowModel': 'injected_flow',
+    'InjectedSLatFlowModel': 'injected_flow',
+    
     # SC-VAEs
     'SparseUnetVaeEncoder': 'sc_vaes.sparse_unet_vae',
     'SparseUnetVaeDecoder': 'sc_vaes.sparse_unet_vae',
@@ -73,6 +77,7 @@ if __name__ == '__main__':
     from .sparse_structure_vae import SparseStructureEncoder, SparseStructureDecoder
     from .sparse_structure_flow import SparseStructureFlowModel
     from .structured_latent_flow import SLatFlowModel, ElasticSLatFlowModel
+    from .injected_flow import InjectedSparseStructureFlowModel, InjectedSLatFlowModel
         
     from .sc_vaes.sparse_unet_vae import SparseUnetVaeEncoder, SparseUnetVaeDecoder
     from .sc_vaes.fdg_vae import FlexiDualGridVaeEncoder, FlexiDualGridVaeDecoder
