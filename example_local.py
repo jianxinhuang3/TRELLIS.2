@@ -11,7 +11,7 @@ from trellis2.utils import render_utils
 from trellis2.renderers import EnvMap
 import o_voxel
 
-WEIGHTS = "/data5/jianxin/TRELLIS.2/weights/TRELLIS.2-4B"
+WEIGHTS = "/data5/jianxin/ckpt/TRELLIS.2-4B"
 
 # 1. Setup Environment Map (imageio reads EXR as RGB float32; opencv-headless lacks OpenEXR)
 envmap = EnvMap(torch.tensor(

@@ -3,7 +3,7 @@
         "denoiser": {
             "name": "InjectedSparseStructureFlowModel",
             "args": {
-                "pretrained_base": "/data5/jianxin/TRELLIS.2/weights/TRELLIS.2-4B/ckpts/ss_flow_img_dit_1_3B_64_bf16",
+                "pretrained_base": "/data5/jianxin/ckpt/TRELLIS.2-4B/ckpts/ss_flow_img_dit_1_3B_64_bf16",
                 "injector_args": {
                     "gate_init": 1.0
                 }
@@ -16,7 +16,7 @@
             "repeat": 1000,
             "image_size": 512,
             "min_aesthetic_score": 4.5,
-            "pretrained_ss_dec": "/data5/jianxin/TRELLIS.2/weights/TRELLIS-image-large/ckpts/ss_dec_conv3d_16l8_fp16"
+            "pretrained_ss_dec": "/data5/jianxin/ckpt/TRELLIS-image-large/ckpts/ss_dec_conv3d_16l8_fp16"
         }
     },
     "trainer": {
@@ -62,12 +62,12 @@
             "image_cond_model": {
                 "name": "DinoV3FeatureExtractor",
                 "args": {
-                    "model_name": "/data5/jianxin/TRELLIS.2/weights/dinov3-vitl16",
+                    "model_name": "/data5/jianxin/ckpt/dinov3-vitl16",
                     "image_size": 512
                 }
             },
             "geo_cond_model": {
-                "pretrained": "/data5/jianxin/TRELLIS.2/weights/TRELLIS-image-large/ckpts/ss_enc_conv3d_16l8_fp16"
+                "pretrained": "/data5/jianxin/ckpt/TRELLIS-image-large/ckpts/ss_enc_conv3d_16l8_fp16"
             }
         }
     }

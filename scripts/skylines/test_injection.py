@@ -25,7 +25,7 @@ sys.path.insert(0, '/data5/jianxin/TRELLIS.2')
 from trellis2 import models
 from trellis2.modules.sparse import SparseTensor
 
-WEIGHTS = '/data5/jianxin/TRELLIS.2/weights/TRELLIS.2-4B/ckpts'
+WEIGHTS = '/data5/jianxin/ckpt/TRELLIS.2-4B/ckpts'
 SS_FLOW = f'{WEIGHTS}/ss_flow_img_dit_1_3B_64_bf16'
 SHAPE_FLOW = f'{WEIGHTS}/slat_flow_img2shape_dit_1_3B_512_bf16'
 

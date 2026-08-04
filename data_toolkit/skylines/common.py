@@ -131,3 +131,45 @@ def load_normalized_geoms(glb_path):
 
     norm = {'center': center.astype(np.float64), 'scale': float(scale), 'up_axis': 'y'}
     return geoms, norm
+
+
+def sanitize_pbr_textures(geoms, max_size=2048):
+    """
+    Make geometries safe for o_voxel.convert.textured_mesh_to_volumetric_attr,
+    whose C++ mipmap builder requires square power-of-two textures.
+
+    - non-TextureVisuals (e.g. vertex-color-only GLBs) are replaced by a
+      default PBRMaterial TextureVisuals
+    - SimpleMaterial is converted to PBRMaterial
+    - every texture map is resampled to the nearest square power-of-two size
+      (capped at max_size). UVs are normalized, so resampling is transparent.
+
+    Used by the batch scheduler (extract_all.py); the verified single-sample
+    flow is unaffected for assets that already satisfy the constraint.
+    """
+    from PIL import Image
+    from trimesh.visual import TextureVisuals
+    from trimesh.visual.material import PBRMaterial, SimpleMaterial
+
+    def pow2_square(img):
+        w, h = img.size
+        if w == h and w > 0 and (w & (w - 1)) == 0 and w <= max_size:
+            return img
+        s = max(w, h)
+        size = 1 << max(0, (s - 1).bit_length())     # next power of two >= s
+        size = min(size, max_size)
+        return img.resize((size, size), Image.BILINEAR)
+
+    for g in geoms:
+        if not isinstance(g.visual, TextureVisuals):
+            g.visual = TextureVisuals(material=PBRMaterial())
+        mat = g.visual.material
+        if isinstance(mat, SimpleMaterial):
+            mat = mat.to_pbr()
+            g.visual.material = mat
+        for key in ['baseColorTexture', 'metallicRoughnessTexture',
+                    'emissiveTexture', 'normalTexture']:
+            tex = getattr(mat, key, None)
+            if tex is not None:
+                setattr(mat, key, pow2_square(tex))
+    return geoms
