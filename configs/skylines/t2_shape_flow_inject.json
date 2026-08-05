@@ -13,7 +13,7 @@
     "dataset": {
         "name": "SkylinesSLatShape",
         "args": {
-            "repeat": 1000,
+            "repeat": 1,
             "resolution": 512,
             "image_size": 512,
             "min_aesthetic_score": 4.5,
@@ -38,13 +38,13 @@
     "trainer": {
         "name": "GeoImageConditionedSparseFlowMatchingCFGTrainer",
         "args": {
-            "max_steps": 10000,
-            "batch_size_per_gpu": 1,
-            "batch_split": 1,
+            "max_steps": 500000,
+            "batch_size_per_gpu": 2,
+            "batch_split": 2,
             "optimizer": {
                 "name": "AdamW",
                 "args": {
-                    "lr": 5e-4,
+                    "lr": 2e-4,
                     "weight_decay": 0.01,
                     "betas": [0.9, 0.95],
                     "eps": 1e-8
@@ -58,13 +58,13 @@
             "grad_clip": {
                 "name": "AdaptiveGradClipper",
                 "args": {
-                    "max_norm": 5.0,
+                    "max_norm": 2.0,
                     "clip_percentile": 95
                 }
             },
-            "i_log": 50,
-            "i_sample": 99999,
-            "i_save": 5000,
+            "i_log": 100,
+            "i_sample": 5000,
+            "i_save": 10000,
             "p_uncond": 0.1,
             "p_uncond_geo": 0.1,
             "t_schedule": {
