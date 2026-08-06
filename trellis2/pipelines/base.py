@@ -3,6 +3,16 @@ import torch
 import torch.nn as nn
 from .. import models
 
+# Stale ckpt root baked into some pipeline.json files on the origin machine
+_STALE_CKPT_ROOT = '/data5/jianxin/ckpt/'
+
+
+def remap_ckpt_path(v):
+    """Offline remap: redirect absolute ckpt paths from the origin machine to $TRELLIS_CKPT_ROOT."""
+    _ckpt_root = os.environ.get('TRELLIS_CKPT_ROOT', None)
+    if isinstance(v, str) and _ckpt_root and v.startswith(_STALE_CKPT_ROOT):
+        return f"{_ckpt_root.rstrip('/')}/{v[len(_STALE_CKPT_ROOT):]}"
+    return v
 
 class Pipeline:
     """
@@ -36,6 +46,7 @@ class Pipeline:
         with open(config_file, 'r') as f:
             args = json.load(f)['args']
 
+        # Offline remap: redirect stale absolute ckpt paths to $TRELLIS_CKPT_ROOT
         _models = {}
         for k, v in args['models'].items():
             if hasattr(cls, 'model_names_to_load') and k not in cls.model_names_to_load:
@@ -43,7 +54,7 @@ class Pipeline:
             try:
                 _models[k] = models.from_pretrained(f"{path}/{v}")
             except Exception as e:
-                _models[k] = models.from_pretrained(v)
+                _models[k] = models.from_pretrained(remap_ckpt_path(v))
 
         new_pipeline = cls(_models)
         new_pipeline._pretrained_args = args

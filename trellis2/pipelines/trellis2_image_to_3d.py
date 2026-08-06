@@ -101,9 +101,16 @@ class Trellis2ImageTo3DPipeline(Pipeline):
         pipeline.shape_slat_normalization = args['shape_slat_normalization']
         pipeline.tex_slat_normalization = args['tex_slat_normalization']
 
-        pipeline.image_cond_model = getattr(image_feature_extractor, args['image_cond_model']['name'])(**args['image_cond_model']['args'])
-        pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
+        # pipeline.image_cond_model = getattr(image_feature_extractor, args['image_cond_model']['name'])(**args['image_cond_model']['args'])
+        # pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**args['rembg_model']['args'])
         
+        from .base import remap_ckpt_path
+        _cond_args = {k: remap_ckpt_path(v) for k, v in args['image_cond_model']['args'].items()}
+        _rembg_args = {k: remap_ckpt_path(v) for k, v in args['rembg_model']['args'].items()}
+        pipeline.image_cond_model = getattr(image_feature_extractor, args['image_cond_model']['name'])(**_cond_args)
+        pipeline.rembg_model = getattr(rembg, args['rembg_model']['name'])(**_rembg_args)
+
+
         pipeline.low_vram = args.get('low_vram', True)
         pipeline.default_pipeline_type = args.get('default_pipeline_type', '1024_cascade')
         pipeline.pbr_attr_layout = {

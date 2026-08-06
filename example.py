@@ -3,6 +3,8 @@ os.environ['OPENCV_IO_ENABLE_OPENEXR'] = '1'
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"  # Can save GPU memory
 import cv2
 import imageio
+import imageio.v3 as iio
+import numpy as np
 from PIL import Image
 import torch
 from trellis2.pipelines import Trellis2ImageTo3DPipeline
@@ -11,13 +13,19 @@ from trellis2.renderers import EnvMap
 import o_voxel
 
 # 1. Setup Environment Map
+# NOTE: cv2 5.0 cannot decode EXR (returns empty array even with OPENCV_IO_ENABLE_OPENEXR=1),
+# so load the HDRI via imageio (RGB float32).
 envmap = EnvMap(torch.tensor(
-    cv2.cvtColor(cv2.imread('assets/hdri/forest.exr', cv2.IMREAD_UNCHANGED), cv2.COLOR_BGR2RGB),
+    np.ascontiguousarray(iio.imread('assets/hdri/forest.exr')[..., :3]),
     dtype=torch.float32, device='cuda'
 ))
 
 # 2. Load Pipeline
-pipeline = Trellis2ImageTo3DPipeline.from_pretrained("microsoft/TRELLIS.2-4B")
+# Offline mode: TRELLIS_CKPT_ROOT points to the local weights root (contains TRELLIS.2-4B/, BiRefNet/, ...)
+_ckpt_root = os.environ.get('TRELLIS_CKPT_ROOT', '/data5/jianxin/ckpt')
+os.environ.setdefault('TRELLIS_CKPT_ROOT', _ckpt_root)   # propagate to remap_ckpt_path in pipelines/base.py
+_pipeline_path = f'{_ckpt_root}/TRELLIS.2-4B' if os.path.isdir(f'{_ckpt_root}/TRELLIS.2-4B') else "microsoft/TRELLIS.2-4B"
+pipeline = Trellis2ImageTo3DPipeline.from_pretrained(_pipeline_path)
 pipeline.cuda()
 
 # 3. Load Image & Run
